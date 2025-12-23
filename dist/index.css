@@ -184,6 +184,13 @@ input[type="range"].powerSlider {
   border-width: 4px;
   padding: 0;
   max-width: 80px;
+
+}
+
+.toggleButton.active {
+  background: linear-gradient(#4c8cff, #2e5db8);
+  color: white;
+  border-color: #dfe8ff;
 }
 
 .toggleButton:active,

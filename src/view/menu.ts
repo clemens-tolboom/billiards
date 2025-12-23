@@ -3,6 +3,8 @@ import { BreakEvent } from "../events/breakevent"
 import { ChatEvent } from "../events/chatevent"
 import { StationaryEvent } from "../events/stationaryevent"
 import { share, shorten } from "../utils/shorten"
+import { PlaceBall } from "../controller/placeball"
+import { Aim } from "../controller/aim"
 
 export class Menu {
   container: Container
@@ -10,6 +12,8 @@ export class Menu {
   share: HTMLButtonElement
   replay: HTMLButtonElement
   camera: HTMLButtonElement
+  practice: HTMLButtonElement
+  private practiceActive = false
 
   disabled = true
 
@@ -20,11 +24,15 @@ export class Menu {
     this.redo = this.getElement("redo")
     this.share = this.getElement("share")
     this.camera = this.getElement("camera")
+    this.practice = this.getElement("practice")
     if (this.camera) {
       this.setMenu(true)
       this.camera.onclick = (_) => {
         this.adjustCamera()
       }
+    }
+    if (this.practice) {
+      this.practice.onclick = () => this.togglePractice(!this.practiceActive)
     }
   }
 
@@ -72,5 +80,28 @@ export class Menu {
 
   getElement(id): HTMLButtonElement {
     return document.getElementById(id)! as HTMLButtonElement
+  }
+
+  private togglePractice(enabled: boolean) {
+    // stop current action and enter/exit placement
+    this.container.table.halt()
+    this.container.eventQueue.length = 0
+    this.practiceActive = enabled
+    this.updatePracticeButton()
+    if (enabled) {
+      this.container.chat.showMessage("Practice: place balls")
+      this.container.updateController(new PlaceBall(this.container, true))
+      this.container.view.camera.forceMode(this.container.view.camera.topView)
+      return
+    }
+    this.container.chat.showMessage("Practice off")
+    this.container.view.camera.toggleMode() // restore from forced top to previous
+    this.container.updateController(new Aim(this.container))
+  }
+
+  private updatePracticeButton() {
+    if (!this.practice) return
+    this.practice.textContent = this.practiceActive ? "🏓✔" : "🏓"
+    this.practice.classList.toggle("active", this.practiceActive)
   }
 }
