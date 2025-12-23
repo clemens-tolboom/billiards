@@ -1,3 +1,4 @@
+import { Carambole } from "./carambole"
 import { FourteenOne } from "./fourteenone"
 import { NineBall } from "./nineball"
 import { Snooker } from "./snooker"
@@ -6,6 +7,8 @@ import { ThreeCushion } from "./threecushion"
 export class RuleFactory {
   static create(ruletype, container) {
     switch (ruletype) {
+      case "carambole":
+        return new Carambole(container)
       case "threecushion":
         return new ThreeCushion(container)
       case "fourteenone":

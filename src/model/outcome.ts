@@ -94,6 +94,20 @@ export class Outcome {
     return false
   }
 
+  static isCarambolePoint(cueBall, outcomes: Outcome[]) {
+    const cueBallFirst = Outcome.cueBallFirst(cueBall, [...outcomes]).filter(
+      (o) => o.type === OutcomeType.Collision && o.ballA === cueBall
+    )
+    const cannons = new Set()
+    for (const outcome of cueBallFirst) {
+      cannons.add(outcome.ballB)
+      if (cannons.size === 2) {
+        return true
+      }
+    }
+    return false
+  }
+
   static cueBallFirst(cueBall, outcomes) {
     outcomes.forEach((o) => {
       if (o.type === OutcomeType.Collision && o.ballB === cueBall) {
